@@ -3,6 +3,8 @@ Library      SeleniumLibrary
 Library      OperatingSystem
 Resource     ${EXECDIR}/PageOperation/LoginPage.robot
 Resource     ${EXECDIR}/PageOperation/Home.robot
+Resource     ${EXECDIR}/PageOperation/ItemPage.robot
+Resource     ${EXECDIR}/PageOperation/CartPage.robot
 Resource     ${EXECDIR}/PageOperation/SearchPage.robot
 Variables    ${EXECDIR}/TestData/TestData.py
 
@@ -10,10 +12,10 @@ Variables    ${EXECDIR}/TestData/TestData.py
 
 # test setup
 Goto Flipkart Login Page
-    Set Environment Variable    webdriver.gecko.driver    ${EXECDIR}
+    Set Environment Variable    ${WEBDRIVER}    ${EXECDIR}
 
-    Open Browser               url=${Url}
-    ...                        browser= firefox
+    Open Browser               url=${URL}
+    ...                        browser=${BROWSER}
     Maximize Browser Window
 
 A User At Home Page
@@ -26,7 +28,7 @@ User Search For Item
 Title Should Be Same As Expected
     [Arguments]                   ${Expected_Title}
     Wait Until Location Is Not    ${Url}
-    Wait                          time=5
+    Wait                          time=3
     Compare Title                 ${Expected_Title}
 
 Page Is Refreshed
@@ -35,5 +37,19 @@ Page Is Refreshed
 Items Are Sorted
     Sort Price High To Low
 
-Add Third Item To Card
-    Select Item    item_number=3
+Required Filters Are Selected
+    [Arguments]                  ${min_value}    ${max_value}
+    Select Min And Max Filter    ${min_value}    ${max_value}
+
+Add Third Item To Cart
+    Select Item
+    Switch Window    CURRENT
+    Add To Cart
+
+Increment Item Count By One
+    Increment Item Count    Count=1
+
+Verify Item Count
+    Wait For Element To Load On Page    ${XPATH_ITEM_COUNT}      
+    ${item_count}                       Get Element Attribute    ${XPATH_ITEM_COUNT}       value
+    Should Be Equal As Strings          ${item_count}            ${Expected_Item_Count}

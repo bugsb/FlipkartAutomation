@@ -26,10 +26,13 @@ Insert Text
 Compare Title
     [Arguments]                   ${title}
     ${actual_title}               Get Title
-    Should Be Equal As Strings    ${actual_title}                                            ${title}
+    Should Be Equal As Strings    ${actual_title}                                               ${title}
     ...                           msg= Title Expected: (${title}) but was: (${actual_title})
     ...                           values=${False}
 
+Scroll Page
+    Execute Javascript    window.scrollTo(0, 150)
+    
 Wait
     [Arguments]    ${time}
     Sleep          ${time}
